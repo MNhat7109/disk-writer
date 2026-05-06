@@ -4,6 +4,8 @@
 #define INVALID_VALUE (uint64_t)-1
 std::ifstream reader;
 
+#define SECTOR_SIZE 512
+
 class LinuxDiskHelperUtils
 {
 public:
@@ -28,6 +30,7 @@ uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 }
 
 #define READ_QUEUE(i, c, d) lutils.read_sysfs((i), "/sys/block/"+(std::string)(d)+"/queue/"#c)
+#define READ_SIZE(i, d) lutils.read_sysfs((i), "/sys/block/"+(std::string)(d)+"/size")
 
 DiskInfo::DiskInfo(const char *string) : m_devname(std::string(string)), m_err(false)
 {
@@ -58,6 +61,7 @@ void DiskInfo::GetInfo()
     physical_sector_size = READ_QUEUE(*this, physical_block_size, m_devname);
     min_io_size = READ_QUEUE(*this, minimum_io_size, m_devname);
     best_io_size = READ_QUEUE(*this, optimal_io_size, m_devname);
+    total_sector_count = READ_SIZE(*this, m_devname)*SECTOR_SIZE/logical_sector_size;
 }
 
 const bool& DiskInfo::GetError()
@@ -71,4 +75,5 @@ void DiskInfo::PrintInfo()
     std::cout << "Physical block size: " << physical_sector_size << "\n";
     std::cout << "Minimum IO size: " << min_io_size << "\n";
     std::cout << "Optimal IO size: " << best_io_size << "\n";
+    std::cout << "Total sector count: " << total_sector_count << "\n";
 }

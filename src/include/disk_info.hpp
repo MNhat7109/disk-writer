@@ -18,6 +18,7 @@ struct DiskInfo
     uint32_t min_io_size;
     uint32_t best_io_size;
     uint64_t total_sector_count;
+    
     // 
 private:
     explicit DiskInfo(const char* string);
