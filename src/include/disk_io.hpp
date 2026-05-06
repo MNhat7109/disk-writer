@@ -11,6 +11,7 @@ public:
     DiskIO(const char* path);
     int Read(uint64_t lba, uint32_t sector_count, void* buf);
     int Write(uint64_t lba, uint32_t sector_count, void* buf);
+    void PrintDiskInfo();
     void Dump();
     ~DiskIO();
 private:

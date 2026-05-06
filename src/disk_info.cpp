@@ -1,4 +1,5 @@
 #include <disk_info.hpp>
+#include <iostream>
 
 #define INVALID_VALUE (uint64_t)-1
 std::ifstream reader;
@@ -12,6 +13,8 @@ public:
 
 uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 {
+    std::cout << "Reading info from disk...\n";
+    std::cout << "Path: " << path << "\n";
     uint64_t value = INVALID_VALUE;
     reader.open(path);
     if (reader) 
@@ -26,7 +29,7 @@ uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 
 #define READ_QUEUE(i, c, d) lutils.read_sysfs((i), "/sys/block/"+(std::string)(d)+"/queue/"#c)
 
-DiskInfo::DiskInfo(const char *string) : m_devname(string), m_err(false)
+DiskInfo::DiskInfo(const char *string) : m_devname(std::string(string)), m_err(false)
 {
 }
 
@@ -38,6 +41,7 @@ DiskInfo DiskInfo::AsPath(const char *path)
     if (spath.rfind(pref, 0) == 0)
     {
         sdevname = spath.substr(pref.size());
+        std::cout <<sdevname.c_str() << "\n";
     }
     return DiskInfo(sdevname.c_str());
 }
@@ -59,4 +63,12 @@ void DiskInfo::GetInfo()
 const bool& DiskInfo::GetError()
 {
     return m_err;
+}
+
+void DiskInfo::PrintInfo()
+{
+    std::cout << "Logical block size: " << logical_sector_size << "\n";
+    std::cout << "Physical block size: " << physical_sector_size << "\n";
+    std::cout << "Minimum IO size: " << min_io_size << "\n";
+    std::cout << "Optimal IO size: " << best_io_size << "\n";
 }

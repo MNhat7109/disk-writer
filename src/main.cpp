@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
     {
         fio = new DiskIO(argv[1]);
         
-
+        fio->PrintDiskInfo();
     }
     catch (std::exception& e)
     {

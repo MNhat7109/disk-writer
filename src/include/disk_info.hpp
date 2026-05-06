@@ -8,6 +8,8 @@ struct DiskInfo
     static DiskInfo AsDevName(const char* devname);
     void GetInfo();
     const bool& GetError();
+
+    void PrintInfo();
     
     friend class LinuxDiskHelperUtils;
     
@@ -19,6 +21,6 @@ struct DiskInfo
     // 
 private:
     explicit DiskInfo(const char* string);
-    const char* m_devname;
+    std::string m_devname;
     bool m_err;
 };
