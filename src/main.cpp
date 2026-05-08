@@ -13,11 +13,12 @@ int main(int argc, char* argv[])
 
     std::cout << "Path: " << argv[1] << std::endl;
     
+    DiskInfo info = DiskInfo(argv[1]);
     try
     {
-        DiskIO fio = DiskIO(argv[1]);
+        DiskIO fio = DiskIO(info);
         
-        fio.PrintDiskInfo();
+        info.PrintInfo();
     }
     catch (std::exception& e)
     {

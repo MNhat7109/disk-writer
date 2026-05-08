@@ -4,9 +4,9 @@
 
 struct DiskInfo
 {
-    static DiskInfo AsPath(const char* path);
-    static DiskInfo AsDevName(const char* devname);
+    DiskInfo(const char* path);
     void GetInfo();
+    const std::string& GetDevicePath();
     const bool& GetError();
 
     void PrintInfo();
@@ -21,7 +21,7 @@ struct DiskInfo
     
     // 
 private:
-    explicit DiskInfo(const char* string);
-    std::string m_devname;
+    void ParsePath();
+    std::string m_devname, m_devpath;
     bool m_err;
 };

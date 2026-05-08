@@ -1,4 +1,5 @@
 PROGNAME = disko
+TARGET ?= linux
 
 CXX = g++
 CXXFLAGS = 
@@ -12,9 +13,11 @@ INC_DIR = $(SRC_DIR)/include
 
 CXXSRCS = $(wildcard $(SRC_DIR)/*.cpp)
 CXXSRCS_SUBS = $(wildcard $(SRC_DIR)/*/*.cpp)
+CXXSRCS_PLATFORM = $(wildcard $(SRC_DIR)/platform/$(TARGET)/*.cpp)
 
 CXXOBJS = $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/cpp/%.o, $(CXXSRCS))
-CXXOBJS += $(patsubst $(SRC_DIR)/%/%.cpp, $(BUILD_DIR)/cpp/%.o, $(CXXSRCS_SUBS))
+CXXOBJS += $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/cpp/%.o, $(CXXSRCS_SUBS))
+CXXOBJS += $(patsubst $(SRC_DIR)/%.cpp, $(BUILD_DIR)/cpp/%.o, $(CXXSRCS_PLATFORM))
 
 .PHONY: run
 

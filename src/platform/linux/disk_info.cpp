@@ -15,8 +15,6 @@ public:
 
 uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 {
-    std::cout << "Reading info from disk...\n";
-    std::cout << "Path: " << path << "\n";
     uint64_t value = INVALID_VALUE;
     reader.open(path);
     if (reader) 
@@ -32,28 +30,6 @@ uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 #define READ_QUEUE(i, c, d) lutils.read_sysfs((i), "/sys/block/"+(std::string)(d)+"/queue/"#c)
 #define READ_SIZE(i, d) lutils.read_sysfs((i), "/sys/block/"+(std::string)(d)+"/size")
 
-DiskInfo::DiskInfo(const char *string) : m_devname(std::string(string)), m_err(false)
-{
-}
-
-DiskInfo DiskInfo::AsPath(const char *path)
-{
-    const std::string pref = "/dev/";
-    std::string spath = (std::string)path;
-    std::string sdevname = "";
-    if (spath.rfind(pref, 0) == 0)
-    {
-        sdevname = spath.substr(pref.size());
-        std::cout <<sdevname.c_str() << "\n";
-    }
-    return DiskInfo(sdevname.c_str());
-}
-
-DiskInfo DiskInfo::AsDevName(const char *devname)
-{
-    return DiskInfo(devname);
-}
-
 void DiskInfo::GetInfo()
 {
     LinuxDiskHelperUtils lutils;
@@ -64,16 +40,14 @@ void DiskInfo::GetInfo()
     total_sector_count = READ_SIZE(*this, m_devname)*SECTOR_SIZE/logical_sector_size;
 }
 
-const bool& DiskInfo::GetError()
-{
-    return m_err;
-}
 
-void DiskInfo::PrintInfo()
+void DiskInfo::ParsePath()
 {
-    std::cout << "Logical block size: " << logical_sector_size << "\n";
-    std::cout << "Physical block size: " << physical_sector_size << "\n";
-    std::cout << "Minimum IO size: " << min_io_size << "\n";
-    std::cout << "Optimal IO size: " << best_io_size << "\n";
-    std::cout << "Total sector count: " << total_sector_count << "\n";
+    const std::string pref = "/dev/";
+    std::string spath = (std::string)m_devpath;
+    if (m_devpath.rfind(pref, 0) == 0)
+    {
+        m_devname = m_devpath.substr(pref.size());
+        std::cout <<m_devname << "\n";
+    }
 }
