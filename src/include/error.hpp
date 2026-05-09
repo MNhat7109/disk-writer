@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <queue>
+#include <memory>
 
 struct ErrorReport
 {
@@ -14,12 +15,12 @@ class ErrorManager
 public:
     friend class ErrorChannel;
 
-    ErrorManager() = default;
+    ErrorManager();
     ErrorChannel* SpawnChannel(std::string name="<anonymous>");
     void DestroyChannel(ErrorChannel* channel);
 private:
-    bool m_stream_empty;
     std::queue<ErrorChannel*> m_fire_bandwagon;
+    std::vector<std::unique_ptr<ErrorChannel>> m_children;
     std::queue<ErrorReport> m_stream;
 };
 
