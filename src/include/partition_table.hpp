@@ -26,10 +26,13 @@ public:
     std::vector<PartitionTableEntry> m_entries;
 private:
     PartitionTableOps* m_table_ops;
-    void Identify();
-    void LoadOps(PartitionTableOps* ops);
     int m_type;
     uint8_t uuid[16];
+
+private:
+    void Identify();
+    void LoadOps(PartitionTableOps* ops);
+    void SetErrorNotImplemented();
 };
 
 struct PartitionTableOps
