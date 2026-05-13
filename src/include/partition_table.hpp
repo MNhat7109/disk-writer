@@ -13,12 +13,21 @@ class PartitionTable
 public:
     PartitionTable(DiskIO& io);
 
-    PartitionTableOps& table_ops;
+    void CreatePartEntry(uint64_t lba_start, uint64_t length);
+    void DeletePartEntry(uint32_t pos);
+    void InitTable();
+    void SpawnTable();
+    void PopulateTable();
+    void PrintEntries();
+    void PrintGeneralInfo();
+    void PrintFull();
+
     DiskIO& m_io;
     std::vector<PartitionTableEntry> m_entries;
 private:
+    PartitionTableOps* m_table_ops;
     void Identify();
-    void LoadOps(PartitionTableOps& ops);
+    void LoadOps(PartitionTableOps* ops);
     int m_type;
     uint8_t uuid[16];
 };
