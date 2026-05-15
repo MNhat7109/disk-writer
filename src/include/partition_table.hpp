@@ -4,14 +4,20 @@
 
 class DiskIO;
 class PartitionTable;
+class ErrorChannel;
 
 struct PartitionTableEntry;
 struct PartitionTableOps;
+
+struct PartitionTablePlugin;
 
 class PartitionTable
 {
 public:
     PartitionTable(DiskIO& io);
+
+    void RegisterPlugin(const PartitionTablePlugin* plugin);
+    void DetectPlugin();
 
     void CreatePartEntry(uint64_t lba_start, uint64_t length);
     void DeletePartEntry(uint32_t pos);
@@ -24,14 +30,16 @@ public:
 
     DiskIO& m_io;
     std::vector<PartitionTableEntry> m_entries;
+    ErrorChannel* m_errstream;
 private:
-    PartitionTableOps* m_table_ops;
+    const PartitionTableOps* m_table_ops;
+    std::vector<const PartitionTablePlugin*> m_plugins;
     int m_type;
     uint8_t uuid[16];
 
 private:
-    void Identify();
-    void LoadOps(PartitionTableOps* ops);
+    void LoadOps(const PartitionTableOps* ops);
+    void PopulateItems(const PartitionTablePlugin* plugin);
     void SetErrorNotImplemented();
 };
 
