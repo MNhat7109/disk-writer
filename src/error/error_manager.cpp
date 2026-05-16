@@ -3,7 +3,9 @@
 
 #define MAX_CHILDREN 64
 
-ErrorManager::ErrorManager() : m_children({})
+ErrorManager::ErrorManager() : 
+m_children({}),
+m_quit_request_count(0)
 {
     m_children.reserve(MAX_CHILDREN);
 }
@@ -33,4 +35,9 @@ void ErrorManager::DestroyChannel(ErrorChannel *channel)
 
     std::swap(*it, m_children.back());
     m_children.pop_back();
+}
+
+const int &ErrorManager::GetQuitCount()
+{
+    return m_quit_request_count;
 }

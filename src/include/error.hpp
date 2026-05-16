@@ -3,9 +3,18 @@
 #include <queue>
 #include <memory>
 
+enum ErrorSeverity
+{
+    SEVERITY_NOTICE,
+    SEVERITY_WARN,
+    SEVERITY_CRITICAL,
+    SEVERITY_FATAL
+} ;
+
 struct ErrorReport
 {
     std::string source, desc;
+    int severity;
 };
 
 class ErrorChannel;
@@ -18,8 +27,10 @@ public:
     ErrorManager();
     ErrorChannel* SpawnChannel(std::string name="<anonymous>");
     void DestroyChannel(ErrorChannel* channel);
+
+    const int& GetQuitCount();
 private:
-    std::queue<ErrorChannel*> m_fire_bandwagon;
+    int m_quit_request_count;
     std::vector<std::unique_ptr<ErrorChannel>> m_children;
     std::queue<ErrorReport> m_stream;
 };
@@ -33,8 +44,8 @@ public:
     void Scream(std::string desc);
     void ThatsItIQuit(std::string desc);
 private:
-    void ReportToBoss(std::string msg);
-    void AskForRetirement();
+    void ReportToBoss(std::string msg, int severity);
+    void VoteQuit();
     ErrorManager& m_parent;
     std::string m_client_name;
 };
