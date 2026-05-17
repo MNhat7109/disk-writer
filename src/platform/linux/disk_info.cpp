@@ -1,5 +1,6 @@
 #include <disk_info.hpp>
 #include <iostream>
+#include <error.hpp>
 
 #define INVALID_VALUE (uint64_t)-1
 std::ifstream reader;
@@ -22,7 +23,7 @@ uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
         reader >> value;
         reader.close();
     }
-    else info.m_err = true;
+    else info.m_err_channel.ThatsItIQuit("Error opening file");
     reader.clear();
     return value;
 }
@@ -32,6 +33,7 @@ uint64_t LinuxDiskHelperUtils::read_sysfs(DiskInfo& info, std::string path)
 
 void DiskInfo::GetInfo()
 {
+    if (m_err_channel.HasError()) return;
     LinuxDiskHelperUtils lutils;
     logical_sector_size = READ_QUEUE(*this, logical_block_size, m_devname);
     physical_sector_size = READ_QUEUE(*this, physical_block_size, m_devname);
@@ -43,6 +45,7 @@ void DiskInfo::GetInfo()
 
 void DiskInfo::ParsePath()
 {
+    if (m_err_channel.HasError()) return;
     const std::string pref = "/dev/";
     std::string spath = (std::string)m_devpath;
     if (m_devpath.rfind(pref, 0) == 0)

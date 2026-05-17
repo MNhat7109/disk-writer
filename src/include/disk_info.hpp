@@ -2,12 +2,13 @@
 #include <cstdint>
 #include <fstream>
 
+class ErrorChannel;
+
 struct DiskInfo
 {
-    DiskInfo(const char* path);
+    DiskInfo(const char* path, ErrorChannel& channel);
     void GetInfo();
     const std::string& GetDevicePath();
-    const bool& GetError();
 
     void PrintInfo();
     
@@ -23,5 +24,5 @@ struct DiskInfo
 private:
     void ParsePath();
     std::string m_devname, m_devpath;
-    bool m_err;
+    ErrorChannel& m_err_channel;
 };

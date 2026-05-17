@@ -29,7 +29,9 @@ public:
     void DestroyChannel(ErrorChannel* channel);
 
     const int& GetQuitCount();
+    void UnwindErrorStream();
 private:
+    void PrintError(const ErrorReport& report);
     int m_quit_request_count;
     std::vector<std::unique_ptr<ErrorChannel>> m_children;
     std::queue<ErrorReport> m_stream;
@@ -43,9 +45,11 @@ public:
     void Swear(std::string desc);
     void Scream(std::string desc);
     void ThatsItIQuit(std::string desc);
+    const bool& HasError();
 private:
     void ReportToBoss(std::string msg, int severity);
     void VoteQuit();
+    bool m_err;
     ErrorManager& m_parent;
     std::string m_client_name;
 };

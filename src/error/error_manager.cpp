@@ -1,10 +1,17 @@
 #include <error.hpp>
 #include <algorithm>
+#include <iostream>
 
 #define MAX_CHILDREN 64
 
+static const char* const s_severity_string[] = {
+    "INFO",
+    "WARN",
+    "CRITICAL",
+    "FATAL"
+};
+
 ErrorManager::ErrorManager() : 
-m_children({}),
 m_quit_request_count(0)
 {
     m_children.reserve(MAX_CHILDREN);
@@ -40,4 +47,21 @@ void ErrorManager::DestroyChannel(ErrorChannel *channel)
 const int &ErrorManager::GetQuitCount()
 {
     return m_quit_request_count;
+}
+
+void ErrorManager::UnwindErrorStream()
+{
+    while (!m_stream.empty())
+    {
+        auto current_report = m_stream.front();
+        m_stream.pop();
+        PrintError(current_report);
+    }
+}
+
+void ErrorManager::PrintError(const ErrorReport& report)
+{
+    std::cerr << "[" << s_severity_string[report.severity] << "] " 
+    << "<" << report.source << "> :"
+    << report.desc << "\n";
 }

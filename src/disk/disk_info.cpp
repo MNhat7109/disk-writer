@@ -1,18 +1,18 @@
 #include <disk_info.hpp>
 #include <iostream>
+#include <error.hpp>
 
-DiskInfo::DiskInfo(const char *path) : m_devpath(path), m_devname(), m_err(false)
+DiskInfo::DiskInfo(const char *path, ErrorChannel& channel) : 
+m_devpath(path), 
+m_devname(), 
+m_err_channel(channel)
 {
     ParsePath();
 }
 
-const bool& DiskInfo::GetError()
-{
-    return m_err;
-}
-
 void DiskInfo::PrintInfo()
 {
+    if (m_err_channel.HasError()) return;
     std::cout << "Logical block size: " << logical_sector_size << "\n";
     std::cout << "Physical block size: " << physical_sector_size << "\n";
     std::cout << "Minimum IO size: " << min_io_size << "\n";

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <disk_io.hpp>
-
-int ret = 0;
+#include <error.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -11,22 +10,16 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    ErrorManager err_man;
+
     std::cout << "Path: " << argv[1] << std::endl;
     
-    DiskInfo info = DiskInfo(argv[1]);
-    try
-    {
-        DiskIO fio = DiskIO(info);
-        
-        info.PrintInfo();
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "Error: " << e.what() << std::endl;
-        ret = 1;
-        goto done;
-    }
+    DiskInfo info(argv[1], *err_man.SpawnChannel("disk_info"));
+    DiskIO fio(info, *err_man.SpawnChannel("disk_io"));
+    info.PrintInfo();
+    
+    err_man.UnwindErrorStream();
+    if (err_man.GetQuitCount() > 0) return 1;
 
-done:
-    return ret;
+    return 0;
 }

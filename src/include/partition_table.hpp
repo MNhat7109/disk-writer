@@ -14,7 +14,7 @@ struct PartitionTablePlugin;
 class PartitionTable
 {
 public:
-    PartitionTable(DiskIO& io);
+    PartitionTable(DiskIO& io, ErrorChannel& channel);
 
     void RegisterPlugin(const PartitionTablePlugin* plugin);
     void DetectPlugin();
@@ -30,7 +30,7 @@ public:
 
     DiskIO& m_io;
     std::vector<PartitionTableEntry> m_entries;
-    ErrorChannel* m_errstream;
+    ErrorChannel& m_err_channel;
 private:
     const PartitionTableOps* m_table_ops;
     std::vector<const PartitionTablePlugin*> m_plugins;
